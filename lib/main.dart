@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:zipass/routes/home_route.dart';
+import 'package:zipass/routes/saved_route.dart';
 
 void main() {
   runApp(const MyApp());
@@ -40,25 +42,84 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  int _selectedIndex = 0;
+  var _bottomNavigationBarItems = <BottomNavigationBarItem>[];
+
+  //アイコン情報
+  static const _RootWidgetIcons = [Icons.home, Icons.save];
+  //アイコン文字列
+  static const _RootWidgetItemNames = ['ホーム', '保存済み'];
+
+  late var _routes = [
+    Home(),
+    Saved(),
+  ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // ボトムナビゲーションバーのアイテムを更新
+    _bottomNavigationBarItems = List.generate(
+      _RootWidgetItemNames.length,
+      (index) => index == _selectedIndex ? _UpdateActiveState(index) : _UpdateDeactiveState(index),
+    );
+  }
+
+  /// インデックスのアイテムをアクティベートする
+  BottomNavigationBarItem _UpdateActiveState(int index) {
+    return BottomNavigationBarItem(
+      icon: Icon(
+        _RootWidgetIcons[index],
+        color: Colors.black87,
+      ),
+      label: _RootWidgetItemNames[index],
+    );
+  }
+
+  /// インデックスのアイテムをディアクティベートする
+  BottomNavigationBarItem _UpdateDeactiveState(int index) {
+    return BottomNavigationBarItem(
+      icon: Icon(
+        _RootWidgetIcons[index],
+        color: Colors.black26,
+      ),
+      label: _RootWidgetItemNames[index],
+    );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _bottomNavigationBarItems[_selectedIndex] = _UpdateDeactiveState(_selectedIndex);
+      _bottomNavigationBarItems[index] = _UpdateActiveState(index);
+      _selectedIndex = index;
+
+      // 旅行一覧のインデックスを1に設定
+      if (index == 1) {
+        _selectedIndex = 1;
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+      // appBar: AppBar(
+      //   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      //   title: Text(widget.title),
+      // ),
+      body: Column(
+        children: [
+          Expanded(
+            child: _routes.elementAt(_selectedIndex),
+          ),
+        ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        items: _bottomNavigationBarItems,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
