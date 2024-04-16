@@ -76,32 +76,47 @@ class _SavedState extends State<Saved> {
   }
 
   Future<void> _updateZipFileName() async {
-    if (_newZipFileName == null) {
-      setState(() {
-        _renameZipFile = null;
-      });
-      return;
-    }
+    try {
+      if (_newZipFileName == null || _renameZipFile == null) {
+        setState(() {
+          _renameZipFile = null;
+          _newZipFileName = null;
+        });
+        return;
+      }
 
-    final oldFile = File(_renameZipFile!);
-    final oldName = oldFile.path.split('/').last;
-    final newFileName = _newZipFileName!.endsWith('.zip') ? _newZipFileName! : '${_newZipFileName!}.zip';
-    final newPath = '${oldFile.parent.path}/$newFileName';
+      final index = zipFiles.indexOf(_renameZipFile!);
+      if (index == -1) {
+        setState(() {
+          _renameZipFile = null;
+          _newZipFileName = null;
+        });
+        return;
+      }
 
-    if (oldName != newFileName) {
-      await oldFile.rename(newPath);
+      final oldFile = File(_renameZipFile!);
+      final oldName = oldFile.path.split('/').last;
+      final newFileName = _newZipFileName!.endsWith('.zip') ? _newZipFileName! : '${_newZipFileName!}.zip';
+      final newPath = '${oldFile.parent.path}/$newFileName';
 
-      setState(() {
-        final index = zipFiles.indexOf(_renameZipFile!);
-        zipFiles[index] = newPath;
-        _renameZipFile = null;
-        _newZipFileName = null;
-      });
-    } else {
-      setState(() {
-        _renameZipFile = null;
-        _newZipFileName = null;
-      });
+      if (oldName != newFileName) {
+        await oldFile.rename(newPath);
+
+        setState(() {
+          final index = zipFiles.indexOf(_renameZipFile!);
+          zipFiles[index] = newPath;
+          _renameZipFile = null;
+          _newZipFileName = null;
+        });
+      } else {
+        setState(() {
+          _renameZipFile = null;
+          _newZipFileName = null;
+        });
+      }
+    } catch (e) {
+      print('Error updating zip file name: $e');
+      // エラーメッセージを表示するなどの適切な処理を行う
     }
   }
 
