@@ -16,13 +16,16 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<File> selectedFiles = [];
   String password = '';
+  List<String> selectedFileNames = [];
 
   Future<void> _selectFiles() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
 
     if (result != null) {
       selectedFiles = result.paths.map((path) => File(path!)).toList();
-      setState(() {});
+      setState(() {
+        selectedFileNames = result.names.map((name) => name!).toList();
+      });
     }
   }
 
@@ -68,6 +71,8 @@ class _HomeState extends State<Home> {
             onPressed: _selectFiles,
             child: const Text('ファイルを選択'),
           ),
+          const SizedBox(height: 10),
+          Text(selectedFileNames.join(', ')),
           const SizedBox(height: 20),
           TextField(
             onChanged: (value) => password = value,
