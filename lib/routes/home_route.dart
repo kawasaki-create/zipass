@@ -3,7 +3,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:archive/archive_io.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-
 import 'package:zipass/routes/saved_route.dart';
 
 class Home extends StatefulWidget {
@@ -32,18 +31,28 @@ class _HomeState extends State<Home> {
   Future<void> _createZipFile() async {
     if (selectedFiles.isEmpty) return;
 
-    final archive = Archive();
+    final directory = await getApplicationDocumentsDirectory();
+    final zipFile = File('${directory.path}/archive.zip');
+
+    final encoder = ZipFileEncoder();
+    encoder.create(zipFile.path);
+
     for (final file in selectedFiles) {
       final fileName = file.path.split('/').last;
       final fileData = file.readAsBytesSync();
-      archive.addFile(ArchiveFile(fileName, fileData.length, fileData));
+
+      final zipEntry = ArchiveFile(fileName, fileData.length, fileData);
+      zipEntry.compress = true;
+
+      if (password.isNotEmpty) {
+        // パスワードまわりコメントアウト
+        // zipEntry.password = password;
+      }
+
+      encoder.addFile(zipEntry as File);
     }
 
-    final zipData = ZipEncoder().encode(archive);
-
-    final directory = await getApplicationDocumentsDirectory();
-    final zipFile = File('${directory.path}/archive.zip');
-    await zipFile.writeAsBytes(zipData!);
+    encoder.close();
 
     // 「保存済み」画面に遷移し、作成したZIPファイルのパスを引数として渡す
     Navigator.push(
@@ -79,6 +88,7 @@ class _HomeState extends State<Home> {
             decoration: const InputDecoration(
               labelText: 'パスワード',
             ),
+            obscureText: true, // パスワード入力を伏字にする
           ),
           const SizedBox(height: 20),
           ElevatedButton(

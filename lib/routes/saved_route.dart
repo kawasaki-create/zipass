@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:share/share.dart';
 
 class Saved extends StatefulWidget {
   final String? zipFilePath;
@@ -43,29 +44,10 @@ class _SavedState extends State<Saved> {
     }
   }
 
-  Future<void> _extractZipFile(String zipFilePath) async {
-    final directory = await FilePicker.platform.getDirectoryPath();
-    if (directory == null) {
-      // ユーザーがキャンセルした場合
-      return;
-    }
-
-    final zipFile = File(zipFilePath);
-    final bytes = await zipFile.readAsBytes();
-    final archive = ZipDecoder().decodeBytes(bytes);
-
-    for (final file in archive) {
-      final filename = file.name;
-      if (file.isFile) {
-        final data = file.content as List<int>;
-        final extractedFile = File('$directory/$filename');
-        await extractedFile.create(recursive: true);
-        await extractedFile.writeAsBytes(data);
-      }
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('ZIPファイルを展開しました')),
+  Future<void> _shareZipFile(String zipFilePath) async {
+    await Share.shareFiles(
+      [zipFilePath],
+      text: 'Shared ZIP File',
     );
   }
 
@@ -189,8 +171,8 @@ class _SavedState extends State<Saved> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    onPressed: () => _extractZipFile(zipFile),
-                    icon: const Icon(Icons.unarchive),
+                    onPressed: () => _shareZipFile(zipFile),
+                    icon: const Icon(Icons.share),
                   ),
                   IconButton(
                     onPressed: () => _renameZipFileDialog(zipFile),
