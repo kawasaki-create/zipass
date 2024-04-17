@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import SSZipArchive
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -16,7 +17,7 @@ import Flutter
                     result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid arguments", details: nil))
                     return
                 }
-                createPasswordProtectedZip(paths: filePaths, password: password, outputPath: outputPath, result: result)
+                self.createPasswordProtectedZip(paths: filePaths, password: password, outputPath: outputPath, result: result)
             } else {
                 result(FlutterMethodNotImplemented)
             }
@@ -24,5 +25,10 @@ import Flutter
         
         GeneratedPluginRegistrant.register(with: self)
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+    
+    func createPasswordProtectedZip(paths: [String], password: String, outputPath: String, result: @escaping FlutterResult) {
+        let success = SSZipArchive.createZipFile(atPath: outputPath, withFilesAtPaths: paths, withPassword: password)
+        result(success)
     }
 }

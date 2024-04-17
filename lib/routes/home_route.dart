@@ -4,6 +4,20 @@ import 'package:archive/archive_io.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:zipass/routes/saved_route.dart';
+import 'package:flutter/services.dart';
+
+class ZipService {
+  static const MethodChannel _channel = MethodChannel('com.example.app/zip');
+
+  static Future<bool> createPasswordProtectedZip(List<String> filePaths, String password, String outputPath) async {
+    final success = await _channel.invokeMethod('createPasswordProtectedZip', {
+      'filePaths': filePaths,
+      'password': password,
+      'outputPath': outputPath,
+    });
+    return success;
+  }
+}
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -32,38 +46,33 @@ class _HomeState extends State<Home> {
     if (selectedFiles.isEmpty) return;
 
     final directory = await getApplicationDocumentsDirectory();
-    final zipFile = File('${directory.path}/archive.zip');
+    final now = DateTime.now();
+    final timestamp = '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}_${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}${now.second.toString().padLeft(2, '0')}';
+    final zipFileName = 'archive_$timestamp.zip';
+    final outputPath = '${directory.path}/$zipFileName';
 
-    final encoder = ZipFileEncoder();
-    encoder.create(zipFile.path);
+    final filePaths = selectedFiles.map((file) => file.path).toList();
+    final success = await ZipService.createPasswordProtectedZip(filePaths, password, outputPath);
 
-    for (final file in selectedFiles) {
-      final fileName = file.path.split('/').last;
-      final fileData = file.readAsBytesSync();
-
-      final zipEntry = ArchiveFile(fileName, fileData.length, fileData);
-      zipEntry.compress = true;
-
-      if (password.isNotEmpty) {
-        // パスワードまわりコメントアウト
-        // zipEntry.password = password;
-      }
-
-      encoder.addFile(zipEntry as File);
+    if (success) {
+      // ZIPファイルの作成に成功した場合の処理
+      print('ZIPファイルの作成に成功しました');
+    } else {
+      // ZIPファイルの作成に失敗した場合の処理
+      print('ZIPファイルの作成に失敗しました');
     }
 
-    encoder.close();
-
-    // 「保存済み」画面に遷移し、作成したZIPファイルのパスを引数として渡す
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Saved(zipFilePath: zipFile.path)),
-    );
-
+    // 選択ファイルとパスワードをクリア
     setState(() {
       selectedFiles = [];
+      selectedFileNames = [];
       password = '';
     });
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Saved(zipFilePath: outputPath)),
+    );
   }
 
   @override
