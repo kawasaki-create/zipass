@@ -45,14 +45,10 @@ class _SavedState extends State<Saved> {
   }
 
   Future<void> _shareZipFile(String zipFilePath) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final zipFileName = zipFilePath.split('/').last;
-    final shareFilePath = '${directory.path}/$zipFileName';
-    await File(zipFilePath).copy(shareFilePath);
-
     await Share.shareFiles(
-      [shareFilePath],
+      [zipFilePath],
       text: 'Shared ZIP File',
+      subject: 'Shared ZIP File',
     );
   }
 

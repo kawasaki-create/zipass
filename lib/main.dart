@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zipass/routes/home_route.dart';
 import 'package:zipass/routes/saved_route.dart';
+import 'package:zipass/routes/tutorial_route.dart';
 
 void main() {
   runApp(const MyApp());
@@ -54,6 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late var _routes = [
     Home(),
     Saved(),
+    Tutorial(),
   ];
 
   @override
@@ -123,9 +125,14 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: _onItemTapped,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Tutorial()),
+          );
+        },
         tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.menu_book_outlined),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

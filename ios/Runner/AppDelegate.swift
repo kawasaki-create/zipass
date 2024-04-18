@@ -28,7 +28,12 @@ import SSZipArchive
     }
     
     func createPasswordProtectedZip(paths: [String], password: String, outputPath: String, result: @escaping FlutterResult) {
-        let success = SSZipArchive.createZipFile(atPath: outputPath, withFilesAtPaths: paths, withPassword: password)
-        result(success)
+        if password.isEmpty {
+            let success = SSZipArchive.createZipFile(atPath: outputPath, withFilesAtPaths: paths)
+            result(success)
+        } else {
+            let success = SSZipArchive.createZipFile(atPath: outputPath, withFilesAtPaths: paths, withPassword: password)
+            result(success)
+        }
     }
 }

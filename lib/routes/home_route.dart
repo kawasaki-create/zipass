@@ -52,7 +52,7 @@ class _HomeState extends State<Home> {
     final outputPath = '${directory.path}/$zipFileName';
 
     final filePaths = selectedFiles.map((file) => file.path).toList();
-    final success = await ZipService.createPasswordProtectedZip(filePaths, password, outputPath);
+    final success = await ZipService.createPasswordProtectedZip(filePaths, password.trim(), outputPath);
 
     if (success) {
       // ZIPファイルの作成に成功した場合の処理
