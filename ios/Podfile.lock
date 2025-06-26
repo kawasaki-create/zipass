@@ -34,6 +34,8 @@ PODS:
     - DKImagePickerController/PhotoGallery
     - Flutter
   - Flutter (1.0.0)
+  - in_app_review (2.0.0):
+    - Flutter
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -42,15 +44,23 @@ PODS:
   - SDWebImage/Core (5.19.1)
   - share (0.0.1):
     - Flutter
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - SSZipArchive (2.4.3)
   - SwiftyGif (5.4.5)
+  - url_launcher_ios (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
+  - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - share (from `.symlinks/plugins/share/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - SSZipArchive
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
   trunk:
@@ -65,22 +75,31 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
     :path: Flutter
+  in_app_review:
+    :path: ".symlinks/plugins/in_app_review/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   share:
     :path: ".symlinks/plugins/share/ios"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
   DKImagePickerController: 0a24ebfe7b48beeb74c27531540aaa2cc1dac6cf
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
-  file_picker: 09aa5ec1ab24135ccd7a1621c46c84134bfd6655
+  file_picker: a0560bc09d61de87f12d246fc47d2119e6ef37be
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
+  in_app_review: 5596fe56fab799e8edb3561c03d053363ab13457
+  path_provider_foundation: 608fcb11be570ce83519b076ab6a1fffe2474f05
   SDWebImage: 40b0b4053e36c660a764958bff99eed16610acbb
-  share: 0b2c3e82132f5888bccca3351c504d0003b3b410
+  share: a34936589f3090d59481bcdc5c30cc9dd47c75f6
+  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
+  url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
 
 PODFILE CHECKSUM: e41dcf04afe0ad087cc843bd71d75ab906077abd
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

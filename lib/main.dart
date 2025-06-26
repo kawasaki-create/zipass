@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:zipass/routes/home_route.dart';
 import 'package:zipass/routes/saved_route.dart';
 import 'package:zipass/routes/tutorial_route.dart';
@@ -14,13 +15,42 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Zipass',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF6750A4),
+          brightness: Brightness.light,
+        ),
         useMaterial3: true,
+        fontFamily: 'Noto Sans JP',
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          elevation: 0,
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
+        ),
+        cardTheme: CardThemeData(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        ),
       ),
       debugShowCheckedModeBanner: false,
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Zipass'),
     );
   }
 }
@@ -35,15 +65,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
   int _selectedIndex = 0;
   var _bottomNavigationBarItems = <BottomNavigationBarItem>[];
 
@@ -60,47 +81,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    // ボトムナビゲーションバーのアイテムを更新
     _bottomNavigationBarItems = List.generate(
       _RootWidgetItemNames.length,
-      (index) => index == _selectedIndex ? _UpdateActiveState(index) : _UpdateDeactiveState(index),
+      (index) => BottomNavigationBarItem(
+        icon: Icon(_RootWidgetIcons[index]),
+        label: _RootWidgetItemNames[index],
+      ),
     );
   }
 
-  /// インデックスのアイテムをアクティベートする
-  BottomNavigationBarItem _UpdateActiveState(int index) {
-    return BottomNavigationBarItem(
-      icon: Icon(
-        _RootWidgetIcons[index],
-        color: Colors.black87,
-      ),
-      label: _RootWidgetItemNames[index],
-    );
-  }
-
-  /// インデックスのアイテムをディアクティベートする
-  BottomNavigationBarItem _UpdateDeactiveState(int index) {
-    return BottomNavigationBarItem(
-      icon: Icon(
-        _RootWidgetIcons[index],
-        color: Colors.black26,
-      ),
-      label: _RootWidgetItemNames[index],
-    );
-  }
 
   void _onItemTapped(int index) {
     setState(() {
-      _bottomNavigationBarItems[_selectedIndex] = _UpdateDeactiveState(_selectedIndex);
-      _bottomNavigationBarItems[index] = _UpdateActiveState(index);
       _selectedIndex = index;
-
-      // 旅行一覧のインデックスを1に設定
-      if (index == 1) {
-        _selectedIndex = 1;
-      }
     });
   }
 
@@ -111,28 +105,36 @@ class _MyHomePageState extends State<MyHomePage> {
       //   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       //   title: Text(widget.title),
       // ),
-      body: Column(
-        children: [
-          Expanded(
-            child: _routes.elementAt(_selectedIndex),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _routes,
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onItemTapped,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'ホーム',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.folder_outlined),
+            selectedIcon: Icon(Icons.folder),
+            label: '保存済み',
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: _bottomNavigationBarItems,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const Tutorial()),
           );
         },
-        tooltip: 'Increment',
-        child: const Icon(Icons.menu_book_outlined),
+        icon: const Icon(Icons.help_outline),
+        label: const Text('ヘルプ'),
+        tooltip: 'チュートリアルを表示',
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

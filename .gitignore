@@ -5,9 +5,11 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 
 # IntelliJ related
@@ -70,3 +72,4 @@ linux/flutter/generated_plugins.cmake
 windows/flutter/generated_plugin_registrant.cc
 windows/flutter/generated_plugin_registrant.h
 windows/flutter/generated_plugins.cmake
+/ios/build
